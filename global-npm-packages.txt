@@ -1,0 +1,11 @@
+/usr/local/lib
+├── bash-language-server@1.17.0
+├── diagnostic-languageserver@1.9.0
+├── htmlhint@0.14.2
+├── jshint@2.12.0
+├── neovim@4.10.0
+├── npm@7.12.1
+├── rollup@2.45.2
+├── sql-lint@0.0.16
+└── standard@16.0.3
+
