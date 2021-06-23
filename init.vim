@@ -230,7 +230,7 @@ if has('macunix')
   Plug 'https://github.com/sheerun/vim-polyglot.git'
   Plug 'https://github.com/ludovicchabant/vim-gutentags.git'
   Plug 'https://github.com/pacokwon/onedarkpaco.vim.git'
-  Plug 'https://github.com/sonph/onehalf.git'
+  Plug 'https://github.com/sonph/onehalf.git', { 'rtp': 'vim' }
   Plug 'https://github.com/chr4/nginx.vim.git'
   Plug 'https://github.com/dense-analysis/ale.git'
   Plug 'https://github.com/browserslist/vim-browserslist.git'
@@ -284,7 +284,7 @@ else
   Plug 'https://github.com/sheerun/vim-polyglot.git'
   Plug 'https://github.com/ludovicchabant/vim-gutentags.git'
   Plug 'https://github.com/pacokwon/onedarkpaco.vim.git'
-  Plug 'https://github.com/sonph/onehalf.git'
+  Plug 'https://github.com/sonph/onehalf.git', { 'rtp': 'vim' }
   Plug 'https://github.com/chr4/nginx.vim.git'
   Plug 'https://github.com/neoclide/coc.nvim.git'
   Plug 'https://github.com/dense-analysis/ale.git'
