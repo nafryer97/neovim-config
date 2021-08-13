@@ -229,9 +229,13 @@ if has('macunix')
   Plug 'https://github.com/tpope/vim-fugitive.git'
   Plug 'https://github.com/sheerun/vim-polyglot.git'
   Plug 'https://github.com/ludovicchabant/vim-gutentags.git'
+  Plug 'https://github.com/skywind3000/gutentags_plus.git'
+  Plug 'https://github.com/SirVer/ultisnips.git'
+  Plug 'https://github.com/honza/vim-snippets.git'
   Plug 'https://github.com/pacokwon/onedarkpaco.vim.git'
   Plug 'https://github.com/sonph/onehalf.git', { 'rtp': 'vim' }
   Plug 'https://github.com/chr4/nginx.vim.git'
+  Plug 'https://github.com/jobo3208/nvim-mysql.git'
   Plug 'https://github.com/dense-analysis/ale.git'
   Plug 'https://github.com/browserslist/vim-browserslist.git'
   Plug 'https://github.com/preservim/nerdtree.git', { 'on':  'NERDTreeToggle' }
@@ -266,6 +270,20 @@ if has('macunix')
   let g:ale_sign_info="ℹ️"
   let g:ale_sign_warning="⚠️"
   let g:ale_sign_error="‼️"
+
+  let g:gutentags_ctags_exclude = ['node_modules/*']
+
+  " enable gtags module
+  let g:gutentags_modules = ['ctags', 'gtags_cscope']
+
+  " config project root markers.
+  let g:gutentags_project_root = ['.root']
+
+  " generate datebases in my cache directory, prevent gtags files polluting my project
+  let g:gutentags_cache_dir = expand('~/.cache/tags')
+
+  " change focus to quickfix window after search (optional).
+  let g:gutentags_plus_switch = 1
 
   "function! AirlineInit()
     "if battery#is_charging() ==# 0
