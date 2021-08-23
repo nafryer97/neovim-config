@@ -1,5 +1,82 @@
-" Neovim configuations 31 March 2021
-" these can be global system settings. local user settings are noted below
+" vim-plug
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+
+" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" ----------------------------- local user settings ----------------------------
+" ------------------------------ macbook specific ------------------------------
+if has('macunix')
+  call plug#begin(stdpath('data') . '/plugged')
+  Plug 'https://github.com/neovim/nvim-lspconfig.git'
+  Plug 'https://github.com/hrsh7th/nvim-compe.git'
+  Plug 'https://github.com/nvim-treesitter/nvim-treesitter.git', { 'branch': '0.5-compat', 'do': ':TSUpdate' }
+  Plug 'https://github.com/xu-cheng/brew.vim.git'
+  Plug 'https://github.com/lambdalisue/battery.vim.git'
+  Plug 'https://github.com/vim-airline/vim-airline.git'
+  Plug 'https://github.com/vim-airline/vim-airline-themes.git'
+  Plug 'https://github.com/tpope/vim-fugitive.git'
+  Plug 'https://github.com/ludovicchabant/vim-gutentags.git'
+  Plug 'https://github.com/skywind3000/gutentags_plus.git'
+  Plug 'https://github.com/pacokwon/onedarkpaco.vim.git'
+  Plug 'https://github.com/chr4/nginx.vim.git'
+  Plug 'https://github.com/sonph/onehalf.git', { 'rtp': 'vim' }
+  Plug 'https://github.com/browserslist/vim-browserslist.git'
+  Plug 'https://github.com/preservim/nerdtree.git', { 'on':  'NERDTreeToggle' }
+  Plug 'https://github.com/lervag/vimtex.git', { 'for': 'tex' }
+  call plug#end()
+  " --------------------------------- battery ----------------------------------
+  let g:battery_watch_on_startup = 1
+  let g:battery#update_interval=180000
+  let g:battery#symbol_charging="🔌"
+  let g:battery#symbol_discharging="🔋"
+  let g:battery#component_format = " %s %v%% "
+  " ------------------------------- airline/ale --------------------------------
+  let g:airline_powerline_fonts = 1
+  let g:airline#extensions#battery#enabled = 1
+  let g:battery#update_statusline = 1
+  "let airline#extensions#ale#warning_symbol = "🟨"
+  "let airline#extensions#ale#error_symbol = "🛑"
+
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+    let g:airline_symbols.crypt = "🔐"
+    let g:airline_left_sep = ''
+    let g:airline_left_alt_sep = ''
+    let g:airline_right_sep = ''
+    let g:airline_right_alt_sep = ''
+    let g:airline_symbols.branch = ''
+    let g:airline_symbols.readonly="🔒"
+    let g:airline_symbols.linenr = '☰'
+    let g:airline_symbols.maxlinenr = ''
+    let g:airline_symbols.dirty='🪲'
+  endif
+  "let g:ale_sign_info="ℹ️"
+  "let g:ale_sign_warning="⚠️"
+  "let g:ale_sign_error="‼️"
+
+" ------------------------------ everything else -----------------------------
+else
+
+call plug#begin(stdpath('data') . '/plugged')
+  Plug 'https://github.com/neovim/nvim-lspconfig.git'
+  Plug 'https://github.com/hrsh7th/nvim-compe.git'
+  Plug 'https://github.com/nvim-treesitter/nvim-treesitter.git', { 'branch': '0.5-compat', 'do': ':TSUpdate' }
+  Plug 'https://github.com/vim-airline/vim-airline.git'
+  Plug 'https://github.com/vim-airline/vim-airline-themes.git'
+  Plug 'https://github.com/tpope/vim-fugitive.git'
+  Plug 'https://github.com/ludovicchabant/vim-gutentags.git'
+  Plug 'https://github.com/skywind3000/gutentags_plus.git'
+  Plug 'https://github.com/pacokwon/onedarkpaco.vim.git'
+  Plug 'https://github.com/sonph/onehalf.git', { 'rtp': 'vim' }
+  Plug 'https://github.com/chr4/nginx.vim.git'
+  Plug 'https://github.com/browserslist/vim-browserslist.git'
+  Plug 'https://github.com/preservim/nerdtree.git', { 'on':  'NERDTreeToggle' }
+  call plug#end()
+endif
 
 syntax enable
 filetype plugin indent on
@@ -36,297 +113,213 @@ set number
 map Y y$
 nnoremap <C-L> :nohl<CR><C-L>
 
-" vim-plug
-let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
-
-" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
-if empty(glob(data_dir . '/autoload/plug.vim'))
-  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
 if $TERM==# 'alacritty'
     set termguicolors
 endif
 
-" ---------------------------------- coc.nvim ----------------------------------
-"  https://github.com/neoclide/coc.nvim
-" Some servers have issues with backup files, see #649.
-set nobackup
-set nowritebackup
-
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
-"
-set updatetime=1000
-" Don't pass messages to |ins-completion-menu|.
-set shortmess+=c
-
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-" Make <CR> auto-select the first completion item and notify coc.nvim to
-" format on enter, <cr> could be remapped by other vim plugin
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
-
-" Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Applying codeAction to the selected region.
-" Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-xmap if <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap af <Plug>(coc-funcobj-a)
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
-
-" Remap <C-f> and <C-b> for scroll float windows/popups.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
-
-" Use CTRL-S for selections ranges.
-" Requires 'textDocument/selectionRange' support of language server.
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
-
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocAction('format')
-
-" Add `:Fold` command to fold current buffer.
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-" Mappings for CoCList
-" Show all diagnostics.
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions.
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
-" Show commands.
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document.
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list.
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
-" Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
-
-" https://github.com/neoclide/coc-snippets
-" Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
-
-" Use <C-j> for jump to next placeholder, it's default of coc.nvim
-let g:coc_snippet_next = '<c-j>'
-
-" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
-let g:coc_snippet_prev = '<c-k>'
-
-" Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
-
-" Use <leader>x for convert visual selected code to snippet
-xmap <leader>x  <Plug>(coc-convert-snippet)
-
-" jscon comment highlighting
+" json comment highlighting
 autocmd FileType json syntax match Comment +\/\/.\+$+
 
-" ----------------------------- local user settings ----------------------------
-" ------------------------------ macbook specific ------------------------------
-if has('macunix')
-  call plug#begin(stdpath('data') . '/plugged')
-  Plug 'https://github.com/xu-cheng/brew.vim.git'
-  Plug 'https://github.com/lambdalisue/battery.vim.git'
-  Plug 'https://github.com/neoclide/coc.nvim.git'
-  Plug 'https://github.com/vim-airline/vim-airline.git'
-  Plug 'https://github.com/vim-airline/vim-airline-themes.git'
-  Plug 'https://github.com/tpope/vim-fugitive.git'
-  Plug 'https://github.com/sheerun/vim-polyglot.git'
-  Plug 'https://github.com/ludovicchabant/vim-gutentags.git'
-  Plug 'https://github.com/skywind3000/gutentags_plus.git'
-  Plug 'https://github.com/SirVer/ultisnips.git'
-  Plug 'https://github.com/honza/vim-snippets.git'
-  Plug 'https://github.com/pacokwon/onedarkpaco.vim.git'
-  Plug 'https://github.com/sonph/onehalf.git', { 'rtp': 'vim' }
-  Plug 'https://github.com/chr4/nginx.vim.git'
-  Plug 'https://github.com/jobo3208/nvim-mysql.git'
-  Plug 'https://github.com/dense-analysis/ale.git'
-  Plug 'https://github.com/browserslist/vim-browserslist.git'
-  Plug 'https://github.com/preservim/nerdtree.git', { 'on':  'NERDTreeToggle' }
-  Plug 'https://github.com/lervag/vimtex.git', { 'for': 'tex' }
-  call plug#end()
-  " --------------------------------- battery ----------------------------------
-  let g:battery_watch_on_startup = 1
-  let g:battery#update_interval=180000
-  let g:battery#symbol_charging="🔌"
-  let g:battery#symbol_discharging="🔋"
-  let g:battery#component_format = " %s %v%% "
-  " ------------------------------- airline/ale --------------------------------
-  let g:airline_powerline_fonts = 1
-  let g:airline#extensions#battery#enabled = 1
-  let g:battery#update_statusline = 1
-  let airline#extensions#ale#warning_symbol = "🟨"
-  let airline#extensions#ale#error_symbol = "🛑"
-
-  if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-    let g:airline_symbols.crypt = "🔐"
-    let g:airline_left_sep = ''
-    let g:airline_left_alt_sep = ''
-    let g:airline_right_sep = ''
-    let g:airline_right_alt_sep = ''
-    let g:airline_symbols.branch = ''
-    let g:airline_symbols.readonly="🔒"
-    let g:airline_symbols.linenr = '☰'
-    let g:airline_symbols.maxlinenr = ''
-    let g:airline_symbols.dirty='🪲'
-  endif
-  let g:ale_sign_info="ℹ️"
-  let g:ale_sign_warning="⚠️"
-  let g:ale_sign_error="‼️"
-
-  let g:gutentags_ctags_exclude = ['node_modules/*']
-
-  " enable gtags module
-  let g:gutentags_modules = ['ctags', 'gtags_cscope']
-
-  " config project root markers.
-  let g:gutentags_project_root = ['.root']
-
-  " generate datebases in my cache directory, prevent gtags files polluting my project
-  let g:gutentags_cache_dir = expand('~/.cache/tags')
-
-  " change focus to quickfix window after search (optional).
-  let g:gutentags_plus_switch = 1
-
-  "function! AirlineInit()
-    "if battery#is_charging() ==# 0
-    "  let g:ale_lint_delay = 1000
-    "  let g:ale_lint_on_enter = 0
-    "endif
-
-  "endfunction
-  "autocmd User AirlineAfterInit call AirlineInit()
-" ------------------------------ everything else -----------------------------
-else
-  call plug#begin(stdpath('data') . '/plugged')
-  Plug 'https://github.com/vim-airline/vim-airline.git'
-  Plug 'https://github.com/vim-airline/vim-airline-themes.git'
-  Plug 'https://github.com/tpope/vim-fugitive.git'
-  Plug 'https://github.com/sheerun/vim-polyglot.git'
-  Plug 'https://github.com/ludovicchabant/vim-gutentags.git'
-  Plug 'https://github.com/pacokwon/onedarkpaco.vim.git'
-  Plug 'https://github.com/sonph/onehalf.git', { 'rtp': 'vim' }
-  Plug 'https://github.com/chr4/nginx.vim.git'
-  Plug 'https://github.com/neoclide/coc.nvim.git'
-  Plug 'https://github.com/dense-analysis/ale.git'
-  Plug 'https://github.com/browserslist/vim-browserslist.git'
-  Plug 'https://github.com/preservim/nerdtree.git', { 'on':  'NERDTreeToggle' }
-  Plug 'https://github.com/lervag/vimtex.git', { 'for': 'tex' }
-  call plug#end()
-
-endif
 " --------------------------------- colorscheme --------------------------------
 colorscheme onedarkpaco
 " ---------------------------------- NERDTree ----------------------------------
 " Exit Vim if NERDTree is the only window left.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() |
       \ quit | endif
+
 " ---------------------------------- airline -----------------------------------
 let g:airline#extensions#fugitiveline#enabled = 1
 let g:airline_theme="onedark"
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline_skip_empty_sections = 1
+let g:airline#extensions#ale#enabled = 1
 "let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
+
 " ---------------------------------- ale/coc -----------------------------------
-let g:ale_linters = { 'javascript':['jshint'] }
-let g:ale_disable_lsp = 0
-let g:ale_echo_cursor = 1
-let g:ale_cursor_detail = 0
+"let g:ale_linters = { 'javascript':['jshint'] }
+"let g:ale_disable_lsp = 1
+"let g:ale_echo_cursor = 1
+"let g:ale_cursor_detail = 0
+"let g:ale_sign_column_always = 1
+
+" --------------------------------- gutentags ----------------------------------
+let g:gutentags_define_advanced_commands = 1
+let g:gutentags_add_default_project_roots = 1
+let g:gutentags_trace = 0
+" enable gtags module
+let g:gutentags_modules = ['ctags', 'gtags_cscope']
+
+" config project root markers.
+let g:gutentags_project_root = ['.root']
+
+" generate datebases in my cache directory, prevent gtags files polluting my project
+let g:gutentags_cache_dir = expand('~/.cache/tags')
+
+" change focus to quickfix window after search (optional).
+let g:gutentags_plus_switch = 1
+
+" -------------------------------- nvim-lspconfig ------------------------------
+lua << EOF
+local nvim_lsp = require('lspconfig')
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  -- Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+end
+
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = { 'clangd', 'cmake', 'vimls' }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    on_attach = on_attach,
+    flags = {
+      debounce_text_changes = 150,
+    }
+  }
+end
+
+-- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization#customizing-how-diagnostics-are-displayed
+vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+  virtual_text = true,
+  signs = true,
+  underline = true,
+  update_in_insert = true,
+})
+
+-- https://github.com/hrsh7th/nvim-compe/#lua-config
+vim.o.completeopt = "menuone,noselect"
+
+require'compe'.setup {
+  enabled = true;
+  autocomplete = true;
+  debug = false;
+  min_length = 1;
+  preselect = 'enable';
+  throttle_time = 80;
+  source_timeout = 200;
+  resolve_timeout = 800;
+  incomplete_delay = 400;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
+  documentation = {
+    border = { '', '' ,'', ' ', '', '', '', ' ' }, -- the border option is the same as `|help nvim_open_win|`
+    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
+    max_width = 120,
+    min_width = 60,
+    max_height = math.floor(vim.o.lines * 0.3),
+    min_height = 1,
+  };
+
+  source = {
+    path = true;
+    buffer = true;
+    calc = true;
+    nvim_lsp = true;
+    nvim_lua = true;
+    vsnip = true;
+    luasnip = true;
+    spell = true;
+    tags = true;
+    treesitter = true;
+  };
+}
+
+-- https://www.chrisatmachine.com/Neovim/27-native-lsp/
+  local t = function(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local check_back_space = function()
+local col = vim.fn.col('.') - 1
+if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
+    return true
+else
+    return false
+end
+end
+
+-- Use (s-)tab to:
+--- move to prev/next item in completion menuone
+--- jump to prev/next snippet's placeholder
+_G.tab_complete = function()
+if vim.fn.pumvisible() == 1 then
+    return t "<C-n>"
+elseif vim.fn.call("vsnip#available", {1}) == 1 then
+    return t "<Plug>(vsnip-expand-or-jump)"
+elseif check_back_space() then
+    return t "<Tab>"
+else
+    return vim.fn['compe#complete']()
+end
+end
+
+_G.s_tab_complete = function()
+if vim.fn.pumvisible() == 1 then
+    return t "<C-p>"
+elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
+    return t "<Plug>(vsnip-jump-prev)"
+else
+    -- If <S-Tab> is not working in your terminal, change it to <C-h>
+    return t "<S-Tab>"
+end
+end
+
+vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+  },
+  indent = {
+  enable = true,
+  }
+}
+EOF
+
+" https://github.com/hrsh7th/nvim-compe/#mappings
+inoremap <silent><expr> <C-Space> compe#complete()
+inoremap <silent><expr> <CR>      compe#confirm('<CR>')
+inoremap <silent><expr> <C-e>     compe#close('<C-e>')
+inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
+inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+
+" auto-format
+autocmd BufWritePre *.js lua vim.lsp.buf.formatting_sync(nil, 100)
+autocmd BufWritePre *.jsx lua vim.lsp.buf.formatting_sync(nil, 100)
+autocmd BufWritePre *.py lua vim.lsp.buf.formatting_sync(nil, 100)
+highlight link CompeDocumentation NormalFloat
